@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация — QueueApp</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .card {
+            background: #ffffff;
+            padding: 35px 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 420px;
+        }
+
+        h2 {
+            margin-bottom: 25px;
+            color: #2c3e50;
+            text-align: center;
+            font-size: 1.6rem;
+        }
+
+        .field-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .field-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #4a5568;
+        }
+
+        .field-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e0;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .field-group input:focus {
+            border-color: #3498db;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background 0.2s;
+        }
+
+        .btn-submit:hover {
+            background-color: #2980b9;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #718096;
+        }
+
+        .login-link a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .error-msg {
+            color: #e74c3c;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Создать аккаунт ⚡</h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        {% if form.errors %}
+            <div class="error-msg">
+                Пожалуйста, проверьте правильно ли заполнены поля.
+            </div>
+        {% endif %}
+
+        <div class="field-group">
+            <label for="username">Логин:</label>
+            <input type="text" id="username" name="username" required placeholder="Придумайте логин">
+        </div>
+
+        <div class="field-group">
+            <label for="first_name">Имя:</label>
+            <input type="text" id="first_name" name="first_name" required placeholder="Ваше имя">
+        </div>
+
+        <div class="field-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required placeholder="example@mail.com">
+        </div>
+
+        <div class="field-group">
+            <label for="company_name">Название компании:</label>
+            <input type="text" id="company_name" name="company_name" placeholder="ООО Компания (необязательно)">
+        </div>
+
+        <div class="field-group">
+            <label for="password1">Пароль:</label>
+            <input type="password" id="password1" name="password1" required placeholder="Введите пароль">
+        </div>
+
+        <div class="field-group">
+            <label for="password2">Подтверждение пароля:</label>
+            <input type="password" id="password2" name="password2" required placeholder="Повторите пароль">
+        </div>
+
+        <button type="submit" class="btn-submit">Зарегистрироваться</button>
+    </form>
+
+    <div class="login-link">
+        Уже есть аккаунт? <a href="{% url 'login' %}">Войти</a>
+    </div>
+</div>
+
+</body>
+</html>

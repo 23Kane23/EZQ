@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создание очереди — QueueApp</title>
+
+    <!-- Главные шрифты вашей системы -->
+    <link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@800,700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f8fafc;
+            color: #0f172a;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* --- ВЕКТОРНЫЙ ФОН С ТЕМАТИКОЙ ОЧЕРЕДИ --- */
+        .bg-illustrations {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        /* Шапка приложения */
+        .brand-logo {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .logo-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #0f172a;
+            font-family: 'Cabinet Grotesk', sans-serif;
+            font-size: 1.7rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-badge {
+            background: #0d9488;
+            color: #ffffff;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            box-shadow: 0 6px 16px rgba(13, 148, 136, 0.2);
+        }
+
+        /* Основная белая карточка */
+        .card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 24px;
+            padding: 36px 32px;
+            box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.05);
+        }
+
+        h2 {
+            font-family: 'Cabinet Grotesk', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 800;
+            letter-spacing: -0.6px;
+            color: #0f172a;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 0.88rem;
+            color: #64748b;
+            margin-bottom: 28px;
+            line-height: 1.45;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #475569;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 14px 16px;
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            color: #0f172a;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        input[type="text"]:focus {
+            background: #ffffff;
+            border-color: #0d9488;
+            box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.12);
+        }
+
+        /* Кнопка */
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            margin-top: 8px;
+            background: #0d9488;
+            border: none;
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: 'Cabinet Grotesk', sans-serif;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px -4px rgba(13, 148, 136, 0.25);
+            transition: all 0.2s ease;
+        }
+
+        .btn-submit:hover {
+            background: #0f766e;
+        }
+
+        .back-nav {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-link {
+            color: #64748b;
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+
+        .back-link:hover {
+            color: #0d9488;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SVG-рисунки электронной очереди на фоне -->
+    <svg class="bg-illustrations" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" fill="none">
+        <!-- Траектория линии очереди -->
+        <path d="M 150 550 Q 300 250 600 450 T 1050 350" stroke="#0d9488" stroke-width="2" stroke-dasharray="6 6" opacity="0.25"/>
+
+        <!-- СЛЕВА: Люди в очереди с номерками -->
+        <g transform="translate(100, 320)" opacity="0.35">
+            <!-- Человек 1 с бирюзовым талоном A-01 -->
+            <circle cx="60" cy="40" r="22" fill="#0d9488"/>
+            <path d="M 30 110 C 30 75, 90 75, 90 110 L 85 160 L 35 160 Z" fill="#0d9488"/>
+            <!-- Талончик A-01 -->
+            <rect x="42" y="-18" width="36" height="24" rx="6" fill="#0d9488"/>
+            <text x="60" y="-2" fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle">A-01</text>
+
+            <!-- Человек 2 в очереди -->
+            <circle cx="-20" cy="80" r="18" fill="#94a3b8"/>
+            <path d="M -40 140 C -40 110, 0 110, 0 140 L -5 180 L -35 180 Z" fill="#94a3b8"/>
+        </g>
+
+        <!-- СПРАВА: Терминал талонов и табло -->
+        <g transform="translate(950, 260)" opacity="0.35">
+            <!-- Стойка/Терминал -->
+            <rect x="50" y="40" width="70" height="130" rx="14" fill="#ffffff" stroke="#cbd5e1" stroke-width="3"/>
+            <rect x="62" y="55" width="46" height="30" rx="6" fill="#0d9488"/>
+            <text x="85" y="74" fill="#ffffff" font-size="11" font-weight="bold" text-anchor="middle">NEXT</text>
+            <rect x="68" y="100" width="34" height="6" rx="3" fill="#cbd5e1"/>
+
+            <!-- Табло с вызовом -->
+            <rect x="20" y="-60" width="130" height="65" rx="12" fill="#ffffff" stroke="#0d9488" stroke-width="2"/>
+            <text x="85" y="-35" fill="#64748b" font-size="10" font-weight="bold" text-anchor="middle">ТАЛОН</text>
+            <text x="85" y="-12" fill="#0d9488" font-size="20" font-weight="bold" text-anchor="middle">A-01 → 1</text>
+        </g>
+    </svg>
+
+    <div class="container">
+        <!-- Единый логотип -->
+        <div class="brand-logo">
+            <a href="{% url 'home' %}" class="logo-link">
+                <div class="logo-badge">⚡</div>
+                QueueApp
+            </a>
+        </div>
+
+        <!-- Карточка формы -->
+        <div class="card">
+            <h2>Создать очередь</h2>
+            <p class="subtitle">Укажите название заведения или локации для запуска электронного талона</p>
+
+            <form method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="queue_name">Название заведения / локации</label>
+                    <input type="text" id="queue_name" name="queue_name" required autofocus placeholder="Barbershop 'TopGun' или Касса №1">
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    Создать очередь
+                </button>
+            </form>
+        </div>
+
+        <div class="back-nav">
+            <a href="{% url 'home' %}" class="back-link">
+                ← Назад к списку
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>

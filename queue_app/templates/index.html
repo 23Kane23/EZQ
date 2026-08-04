@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QueueApp — Электронная очередь</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #0f172a;
+            font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- НАВБАР --- */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 40px;
+            max-width: 1280px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #0f172a;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-badge {
+            background: linear-gradient(135deg, #0d9488, #14b8a6);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .nav-btn {
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            padding: 10px 20px;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-login {
+            color: #475569;
+        }
+        .btn-login:hover {
+            color: #0f172a;
+            background: #e2e8f0;
+        }
+
+        .btn-register-nav {
+            background: #0f172a;
+            color: #ffffff;
+        }
+        .btn-register-nav:hover {
+            background: #1e293b;
+            transform: translateY(-1px);
+        }
+
+        /* --- ОСНОВНОЙ БЛОК --- */
+        .main-content {
+            flex: 1;
+            max-width: 1280px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 20px 40px 60px;
+        }
+
+        /* --- HERO СЕКЦИЯ --- */
+        .hero {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 40px;
+            align-items: center;
+            padding: 40px 0 80px;
+        }
+
+        .hero-text {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .tag-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #ccfbf1;
+            color: #0f766e;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        h1 {
+            font-size: 3.4rem;
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -1.5px;
+            color: #0f172a;
+            margin-bottom: 24px;
+        }
+
+        h1 span {
+            background: linear-gradient(135deg, #0d9488, #2563eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.subtitle {
+            font-size: 1.15rem;
+            line-height: 1.6;
+            color: #475569;
+            margin-bottom: 36px;
+            max-width: 540px;
+            font-weight: 400;
+        }
+
+        .btn-hero {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: #0d9488;
+            color: #ffffff;
+            padding: 16px 36px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            text-decoration: none;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(13, 148, 136, 0.4);
+            transition: all 0.25s ease;
+        }
+
+        .btn-hero:hover {
+            background: #0f766e;
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px -5px rgba(13, 148, 136, 0.5);
+        }
+
+        /* --- ИЛЛЮСТРАЦИЯ С ЧЕЛОВЕЧКАМИ --- */
+        .hero-illustration {
+            position: relative;
+            background: linear-gradient(135deg, #e0f2fe 0%, #ccfbf1 100%);
+            border-radius: 32px;
+            padding: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.05);
+        }
+
+        .hero-illustration svg {
+            width: 100%;
+            height: auto;
+            max-width: 440px;
+        }
+
+        /* --- СЕКЦИЯ "КАК ЭТО РАБОТАЕТ" --- */
+        .how-section {
+            padding-top: 40px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.8px;
+            margin-bottom: 48px;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            padding: 36px 28px;
+            border-radius: 24px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 30px -10px rgba(15, 23, 42, 0.08);
+            border-color: #cbd5e1;
+        }
+
+        .card-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            margin-bottom: 24px;
+        }
+
+        .icon-blue { background: #dbeafe; color: #2563eb; }
+        .icon-teal { background: #ccfbf1; color: #0d9488; }
+        .icon-purple { background: #f3e8ff; color: #9333ea; }
+
+        .card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #0f172a;
+        }
+
+        .card p {
+            font-size: 0.95rem;
+            line-height: 1.55;
+            color: #64748b;
+        }
+
+        /* --- КАБИНЕТ (АВТОРИЗОВАН) --- */
+        .dashboard-container {
+             background: #ffffff;
+             padding: 40px;
+             border-radius: 24px;
+             border: 1px solid #e2e8f0;
+             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+             max-width: 840px;
+             margin: 20px auto;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 20px;
+        }
+
+        .queue-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            margin-bottom: 12px;
+        }
+
+        .queue-card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0f172a;
+            text-decoration: none;
+        }
+
+        .btn-delete {
+            background-color: #fee2e2;
+            color: #ef4444;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        @media (max-width: 968px) {
+            .hero { grid-template-columns: 1fr; text-align: center; }
+            .hero-text { align-items: center; }
+            .cards-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- НАВБАР -->
+    <nav class="navbar">
+        <a href="{% url 'home' %}" class="logo">
+            <div class="logo-badge">⚡</div>
+            QueueApp
+        </a>
+        <div class="nav-links">
+            {% if user.is_authenticated %}
+                <span style="font-weight: 600;">Привет, {{ user.first_name|default:user.username }}!</span>
+                <a href="{% url 'logout' %}" class="nav-btn btn-login">Выйти</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="nav-btn btn-login">Войти</a>
+                <a href="{% url 'register' %}" class="nav-btn btn-register-nav">Регистрация</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- ОСНОВНОЙ КОНТЕНТ -->
+    <main class="main-content">
+        {% if user.is_authenticated %}
+            <!-- ЛИЧНЫЙ КАБИНЕТ -->
+            <div class="dashboard-container">
+                <div class="dashboard-header">
+                    <h2>Мои очереди</h2>
+                    <a href="{% url 'create_queue' %}" class="btn-hero" style="padding: 10px 20px; font-size: 0.95rem;">+ Создать очередь</a>
+                </div>
+                <div class="queue-list">
+                    {% for queue in queues %}
+                        <div class="queue-card">
+                            <a href="{% url 'queue_detail' queue.pk %}" class="queue-card-title">{{ queue.name }}</a>
+                            <div style="display: flex; gap: 12px; align-items: center;">
+                                <a href="{% url 'queue_detail' queue.pk %}" style="color: #0d9488; font-weight: 700; text-decoration: none;">Управлять →</a>
+                                <form action="{% url 'delete_queue' queue.pk %}" method="POST" style="margin: 0;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-delete">Удалить</button>
+                                </form>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <p style="text-align: center; color: #94a3b8; padding: 40px 0;">У вас пока нет активных очередей.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        {% else %}
+            <!-- ЛЕНДИНГ ДЛЯ ГОСТЕЙ -->
+            <section class="hero">
+                <div class="hero-text">
+                    <div class="tag-pill">⚡ Онлайн сервис очередей</div>
+                    <h1>Твой черед.<br><span>Твой ритм.</span> Твой клик.</h1>
+                    <p class="subtitle">
+                        Больше никаких потерянных часов и душных помещений. QueueApp — ваш личный Telegram-помощник для комфортного управления очередью. Прозрачно, быстро и без стресса.
+                    </p>
+                    <a href="{% url 'register' %}" class="btn-hero">
+                        Создать талон
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </a>
+                </div>
+
+                <!-- ИЛЛЮСТРАЦИЯ С ЧЕЛОВЕЧКАМИ И QR-ТЕРМИНАЛОМ -->
+                <div class="hero-illustration">
+                    <svg viewBox="0 0 420 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Направляющая пунктирная линия очереди -->
+                        <path d="M 60 250 C 140 250, 160 210, 240 210 C 290 210, 310 160, 340 130" stroke="#0d9488" stroke-width="4" stroke-dasharray="8 8" opacity="0.4"/>
+
+                        <!-- Стойка/Терминал с QR-кодом -->
+                        <rect x="310" y="50" width="80" height="130" rx="16" fill="#0f172a"/>
+                        <rect x="322" y="62" width="56" height="65" rx="8" fill="#ffffff"/>
+                        <!-- Элементы QR-кода -->
+                        <rect x="330" y="70" width="20" height="20" rx="3" fill="#0d9488"/>
+                        <rect x="334" y="74" width="12" height="12" rx="1" fill="#ffffff"/>
+                        <rect x="352" y="70" width="20" height="20" rx="3" fill="#0f172a"/>
+                        <rect x="330" y="94" width="20" height="20" rx="3" fill="#0f172a"/>
+                        <rect x="355" y="95" width="15" height="15" rx="2" fill="#0d9488"/>
+                        <!-- Ножка стойки -->
+                        <rect x="345" y="180" width="10" height="80" fill="#334155"/>
+                        <ellipse cx="350" cy="260" rx="35" ry="8" fill="#1e293b"/>
+
+                        <!-- Человечек 1 (Сканирует со смартфона) -->
+                        <g id="person-1">
+                            <!-- Голова -->
+                            <circle cx="250" cy="120" r="14" fill="#0d9488"/>
+                            <!-- Тело -->
+                            <path d="M 232 170 C 232 145, 268 145, 268 170 L 265 210 L 235 210 Z" fill="#0d9488"/>
+                            <!-- Телефон в руке -->
+                            <rect x="270" y="135" width="12" height="22" rx="3" fill="#2563eb" transform="rotate(-15 270 135)"/>
+                            <!-- Зеленый чекмарк над человеком -->
+                            <circle cx="250" cy="90" r="12" fill="#10b981"/>
+                            <path d="M 244 90 L 248 94 L 256 86" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </g>
+
+                        <!-- Человечек 2 (В очереди, ждет) -->
+                        <g id="person-2">
+                            <circle cx="170" cy="160" r="13" fill="#2563eb"/>
+                            <path d="M 153 205 C 153 182, 187 182, 187 205 L 184 245 L 156 245 Z" fill="#2563eb"/>
+                            <!-- Номер в очереди над ним -->
+                            <rect x="150" y="128" width="40" height="20" rx="10" fill="#ffffff"/>
+                            <text x="170" y="142" font-family="'Plus Jakarta Sans', sans-serif" font-size="11" font-weight="800" fill="#2563eb" text-anchor="middle">#02</text>
+                        </g>
+
+                        <!-- Человечек 3 (Только подошел) -->
+                        <g id="person-3">
+                            <circle cx="80" cy="200" r="12" fill="#64748b"/>
+                            <path d="M 65 240 C 65 220, 95 220, 95 240 L 93 275 L 67 275 Z" fill="#64748b"/>
+                            <!-- Номер в очереди -->
+                            <rect x="60" y="170" width="40" height="20" rx="10" fill="#ffffff"/>
+                            <text x="80" y="184" font-family="'Plus Jakarta Sans', sans-serif" font-size="11" font-weight="800" fill="#64748b" text-anchor="middle">#03</text>
+                        </g>
+                    </svg>
+                </div>
+            </section>
+
+            <!-- КАРТОЧКИ "КАК ЭТО РАБОТАЕТ" -->
+            <section class="how-section">
+                <h2 class="section-title">Как это работает?</h2>
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-icon icon-blue">⚡</div>
+                        <h3>1. Создай очередь</h3>
+                        <p>Задайте название услуги или окна в пару кликов. Система мгновенно сформирует ваш уникальный QR-код.</p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-icon icon-teal">📲</div>
+                        <h3>2. Сканируй и жди</h3>
+                        <p>Посетители сканируют QR-код со смартфона, получают виртуальный талон и свободно занимаются своими делами.</p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-icon icon-purple">🔔</div>
+                        <h3>3. Telegram-уведомление</h3>
+                        <p>Как только подходит черед, сервис заранее отправляет сообщение в Telegram. Никакой путаницы и толпы.</p>
+                    </div>
+                </div>
+            </section>
+        {% endif %}
+    </main>
+
+</body>
+</html>

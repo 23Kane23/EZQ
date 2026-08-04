@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ queue.name }} — Дашборд очереди</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 min-h-screen text-slate-900">
+
+  <!-- Шапка -->
+  <header class="bg-white border-b border-slate-200">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+      <div class="flex items-center space-x-3">
+        <a href="/" class="text-slate-500 hover:text-slate-800">← Назад</a>
+        <h1 class="text-xl font-bold">Очередь: {{ queue.name }}</h1>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 py-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+
+    <!-- ЛЕВАЯ КОЛОНКА: Сгенерированный QR-код заведения -->
+    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col items-center text-center">
+      <h2 class="font-bold text-lg mb-2">QR-код для клиентов</h2>
+      <p class="text-sm text-slate-500 mb-4">Покажите или распечатайте этот QR для входа в очередь</p>
+
+      <img src="data:image/png;base64,{{ qr_code }}" alt="QR Code" class="w-56 h-56 border rounded-xl p-2 mb-4">
+
+      <a href="{{ bot_link }}" target="_blank" class="text-xs text-blue-600 hover:underline break-all mb-4">
+        {{ bot_link }}
+      </a>
+
+      <button onclick="window.print()" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-medium transition">
+        🖨️ Распечатать QR
+      </button>
+    </div>
+
+    <!-- ЦЕНТРАЛЬНАЯ И ПРАВАЯ КОЛОНКИ: Панель управления и Статистика -->
+    <div class="md:col-span-2 space-y-6">
+
+      <!-- Карточка ТЕКУЩЕГО вызываемого клиента -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Сейчас обслуживается</h2>
+
+        {% if current_called %}
+          <div class="flex items-center justify-between bg-emerald-50 border border-emerald-200 p-4 rounded-xl mb-4">
+            <div>
+              <span class="text-3xl font-extrabold text-emerald-600">№{{ current_called.position }}</span>
+              <h3 class="text-lg font-bold text-slate-800 mt-1">{{ current_called.user.first_name }}</h3>
+              <p class="text-xs text-slate-500">Записан в: {{ current_called.created_at|date:"H:i, d.m.Y" }}</p>
+            </div>
+            <div class="flex space-x-2">
+              <form action="{% url 'change_status' queue.pk current_called.id 'served' %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg text-sm shadow">
+                  ✅ Обслужен
+                </button>
+              </form>
+              <form action="{% url 'change_status' queue.pk current_called.id 'cancelled' %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" class="px-3 py-2 bg-rose-100 hover:bg-rose-200 text-rose-700 font-medium rounded-lg text-sm">
+                  ❌ Не пришел
+                </button>
+              </form>
+            </div>
+          </div>
+        {% else %}
+          <div class="text-center py-6 border-2 border-dashed border-slate-200 rounded-xl mb-4">
+            <p class="text-slate-500">В данный момент никто не у стойки</p>
+          </div>
+        {% endif %}
+
+        <!-- Кнопка ВЫЗВАТЬ СЛЕДУЮЩЕГО -->
+        <form action="{% url 'call_next' queue.pk %}" method="POST">
+          {% csrf_token %}
+          <button type="submit" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-lg rounded-xl shadow-lg transition flex items-center justify-center space-x-2">
+            <span>📢 ВЫЗВАТЬ СЛЕДУЮЩЕГО</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Список ОЖИДАЮЩИХ -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="font-bold text-lg">Ожидают в очереди ({{ waiting_items|length }})</h2>
+        </div>
+
+        <div class="divide-y divide-slate-100">
+          {% for item in waiting_items %}
+            <div class="py-3 flex items-center justify-between">
+              <div class="flex items-center space-x-3">
+                <span class="w-10 h-10 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center font-bold text-sm">
+                  №{{ item.position }}
+                </span>
+                <div>
+                  <h4 class="font-medium text-slate-800">{{ item.user.first_name }}</h4>
+                  <p class="text-xs text-slate-400">Зашел: {{ item.created_at|date:"H:i:s, d.m.Y" }}</p>
+                </div>
+              </div>
+              <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
+                Ожидает
+              </span>
+            </div>
+          {% empty %}
+            <p class="text-slate-400 text-center py-4">Очередь пуста</p>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- СТАТИСТИКА ПО ДАТАМ -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <h2 class="font-bold text-lg mb-4 text-slate-800">📊 Статистика по дням</h2>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-sm">
+            <thead>
+              <tr class="border-b border-slate-200 text-slate-400 font-semibold uppercase text-xs">
+                <th class="py-2 px-3">Дата</th>
+                <th class="py-2 px-3 text-center">Всего</th>
+                <th class="py-2 px-3 text-center">Обслужено</th>
+                <th class="py-2 px-3 text-center">Не пришли</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              {% for stat in daily_stats %}
+                <tr class="hover:bg-slate-50">
+                  <td class="py-3 px-3 font-medium text-slate-700">
+                    {{ stat.created_at__date|date:"d.m.Y" }}
+                  </td>
+                  <td class="py-3 px-3 text-center font-bold text-slate-800">
+                    {{ stat.total }}
+                  </td>
+                  <td class="py-3 px-3 text-center font-semibold text-emerald-600">
+                    {{ stat.served }}
+                  </td>
+                  <td class="py-3 px-3 text-center font-semibold text-rose-500">
+                    {{ stat.cancelled }}
+                  </td>
+                </tr>
+              {% empty %}
+                <tr>
+                  <td colspan="4" class="text-center py-4 text-slate-400">
+                    История посещений пока пуста
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+</body>
+</html>
