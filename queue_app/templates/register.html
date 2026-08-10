@@ -97,8 +97,23 @@
 
         .error-msg {
             color: #e74c3c;
+            background-color: #fdf2f2;
+            border: 1px solid #f8b4b4;
+            padding: 10px 12px;
+            border-radius: 6px;
             font-size: 0.85rem;
             margin-bottom: 15px;
+        }
+
+        .error-msg ul {
+            padding-left: 18px;
+            margin-top: 4px;
+        }
+
+        .field-error {
+            color: #e74c3c;
+            font-size: 0.8rem;
+            margin-top: 4px;
         }
     </style>
 </head>
@@ -112,38 +127,63 @@
 
         {% if form.errors %}
             <div class="error-msg">
-                Пожалуйста, проверьте правильно ли заполнены поля.
+                <strong>Пожалуйста, исправьте следующие ошибки:</strong>
+                <ul>
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <li>{% if field != '__all__' %}<strong>{{ field }}:</strong> {% endif %}{{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
             </div>
         {% endif %}
 
         <div class="field-group">
             <label for="username">Логин:</label>
-            <input type="text" id="username" name="username" required placeholder="Придумайте логин">
+            <input type="text" id="username" name="username" value="{{ request.POST.username|default:'' }}" required placeholder="Придумайте логин">
+            {% if form.username.errors %}
+                <div class="field-error">{{ form.username.errors.0 }}</div>
+            {% endif %}
         </div>
 
         <div class="field-group">
             <label for="first_name">Имя:</label>
-            <input type="text" id="first_name" name="first_name" required placeholder="Ваше имя">
+            <input type="text" id="first_name" name="first_name" value="{{ request.POST.first_name|default:'' }}" required placeholder="Ваше имя">
+            {% if form.first_name.errors %}
+                <div class="field-error">{{ form.first_name.errors.0 }}</div>
+            {% endif %}
         </div>
 
         <div class="field-group">
             <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required placeholder="example@mail.com">
+            <input type="email" id="email" name="email" value="{{ request.POST.email|default:'' }}" required placeholder="example@mail.com">
+            {% if form.email.errors %}
+                <div class="field-error">{{ form.email.errors.0 }}</div>
+            {% endif %}
         </div>
 
         <div class="field-group">
             <label for="company_name">Название компании:</label>
-            <input type="text" id="company_name" name="company_name" placeholder="ООО Компания (необязательно)">
+            <input type="text" id="company_name" name="company_name" value="{{ request.POST.company_name|default:'' }}" placeholder="ООО Компания (необязательно)">
+            {% if form.company_name.errors %}
+                <div class="field-error">{{ form.company_name.errors.0 }}</div>
+            {% endif %}
         </div>
 
         <div class="field-group">
             <label for="password1">Пароль:</label>
             <input type="password" id="password1" name="password1" required placeholder="Введите пароль">
+            {% if form.password1.errors %}
+                <div class="field-error">{{ form.password1.errors.0 }}</div>
+            {% endif %}
         </div>
 
         <div class="field-group">
             <label for="password2">Подтверждение пароля:</label>
             <input type="password" id="password2" name="password2" required placeholder="Повторите пароль">
+            {% if form.password2.errors %}
+                <div class="field-error">{{ form.password2.errors.0 }}</div>
+            {% endif %}
         </div>
 
         <button type="submit" class="btn-submit">Зарегистрироваться</button>
