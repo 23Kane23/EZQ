@@ -86,6 +86,8 @@ async def start_handler(message: types.Message, command: CommandObject):
     first_name = message.from_user.first_name or "Посетитель"
     slug = command.args
 
+    print(f"👉 ПРИШЕЛ SLUG ИЗ ССЫЛКИ: '{slug}'")
+    
     if not slug:
         await message.answer("👋 Чтобы встать в очередь, отсканируйте QR-код заведения.")
         return
