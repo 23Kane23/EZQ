@@ -32,8 +32,6 @@ from django.db.models import Max
 from queue_app.models import Queue, TelegramUser, QueueItem
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-if not BOT_TOKEN:
-    raise ValueError("BOT_TOKEN не найден в .env!")
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
